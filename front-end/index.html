@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>REDE SOCIAL - EACH</title>
+	
+	<!-- Adicionar o CDN do jquery e Socket.io e adicionar um arquivo designer.css --> 
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+
+	<link rel="stylesheet" href="designer.css" />
+
+</head>
+
+
+<body>
+	<!-- Div com o formulário de acesso, para inserir o nick 
+	Foi usado essa ideia do site tableless de Daniel Campos-->
+	<div id='acesso_usuario'>
+		<form id='login'>
+			<input type='text' placeholder='Insira seu nick' name='nick' id='nick' />
+			<input type='submit' value='Entrar' />
+		</form>
+	</div>
+    
+	<!-- Temporizador da rede social -->
+	<div id='temporizador'>
+		<span id = "timer_horas">00</span>:
+		<span id = "timer_minutos">00</span>:
+		<span id = "timer_segundos">00</span>
+	</div>
+
+
+	<!-- Div principal onde fica o painel de mensagens e lista de usuários -->
+	<div id='sala_chat'>
+		<div id="historico_mensagens"></div>
+		<select multiple="multiple" id='lista_usuarios'><option value=''>Todos</option></select>
+		<form id='chat'>
+			<input type='text' id='texto_mensagem' name='texto_mensagem' />
+			<input type='submit' value='Enviar mensagem!' />	
+		</form>
+
+	</div>
+	
+	
+	<script type="text/javascript">
+
+		var socket = io('http://localhost:3000');
+		console.log("Socket: " + socket);
+
+
+		//Ao enviar uma mensagem
+		//Algumas partes tambem foi aprendido no codigo do Daniel Campos (tableless)
+		//Usando o emit e on no HTML
+		$("form#chat").submit(function(e){
+			
+			e.preventDefault();
+
+			var mensagem = $(this).find("#texto_mensagem").val();
+			var usuario = $("#lista_usuarios").val();//Usuário selecionado na lista lateral direita
+
+			//Evento acionado no servidor para o envio da mensagem
+			//junto com o nome do usuário selecionado da lista
+			socket.emit("enviar mensagem", {msg: mensagem, usu: usuario}, function(){
+				$("form#chat #texto_mensagem").val("");
+			});
+
+		});
+
+
+		//Resposta ao envio de mensagens do servidor
+		socket.on("atualizar mensagens", function(dados){
+			var mensagem_formatada = $("<p />").text(dados.msg).addClass(dados.tipo);
+			$("#historico_mensagens").append(mensagem_formatada);
+		});
+
+
+
+		$("form#login").submit(function(e){
+			e.preventDefault();
+
+			//Evento enviado quando o usuário insere um nick
+			socket.emit("entrar", $(this).find("#nick").val(), function(valido){
+				if(valido){
+					//Caso nao exista nenhum usuario com o mesmo nome, o painel principal e exibido
+					//e um alerta e acionado
+					$("#acesso_usuario").hide();
+					$("#sala_chat").show();
+					
+				    alert($("#nick").val() + "  Seja bem-vindo!");
+
+					
+		            
+
+				}else{
+					//Do contrario o campo de mensagens e limpo e e apresentado um alert
+					$("#acesso_usuario").val("");
+					alert("Nome já utilizado nesta sala");
+				}
+			});
+		});
+
+		//O servidor envia uma nova lista de usuario
+		//O painel e limpo e reinserida a opcao todos junto com a lista de todos os usuarios
+		socket.on("atualizar usuarios", function(usuarios){
+
+           console.log("Atualizando Usuarios!");
+
+			$("#lista_usuarios").empty();
+			$("#lista_usuarios").append("<option value=''>Todos</option>");
+				$.each(usuarios, function(indice){
+					var opcao_usuario = $("<option />").text(usuarios[indice]);
+					$("#lista_usuarios").append(opcao_usuario);
+			});
+		});
+
+        //Temporizador, para enviar reenviar a mensagem se o usuario nao 
+		//responder em um determinado tempo
+		//Nao esta funcionando corretamente, nao deu tempo de aprender e implementar esse temporizador
+		var tempoMaximo = new Date(new Date().getTime() + 15 * 60000);
+
+		contador = window.setInterval(function(){
+		
+			var tempoAtual = new Date();
+			var diferenca = tempoMaximo - tempoAtual;
+
+			if (diferenca <= 0) {
+				window.clearInterval(contador);
+			}
+
+			var minutos = Math.floor(diferenca / 60000);
+			//var minutos = 0;
+			var segundos = diferenca % 60000;
+			
+			document.getElementById('timer_minutos').innerHTML = minutos;
+			document.getElementById('timer_segundos').innerHTML = segundos.toString().substring(0,2);
+
+
+
+		}, 1000);
+
+
+	</script>
+
+
+</body>
+</html>

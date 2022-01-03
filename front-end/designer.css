@@ -1,0 +1,81 @@
+html, body{
+	font-family: 'Times New Roman', Times, serif;
+	margin: 0;
+	padding: 0;
+}
+body{
+	background-image: url(unnamed.jpg);
+	padding:10px;
+}
+
+form{
+	margin:15px 0;
+}
+form input[type='text']{
+	border:2px solid #c54545;
+	border-radius: 5px;
+	padding:5px;
+	width:75%;
+}
+form input[type='submit']{
+	background: #c54545;
+	border:none;
+	border-radius: 5px;
+	color:#FFF;
+	cursor:pointer;
+	font-weight: bold;
+	padding:7px 5px;
+	width:19%;
+}
+
+#temporizador{
+    color: #fff;
+    position: fixed;
+    height: 20px;
+    background: #141414;
+}
+
+#historico_mensagens, #lista_usuarios{
+	background: #FFF;
+	border:2px solid #c54545;
+	height: 550px;
+	float:left;
+	margin-bottom: 10px;
+	width:75%;
+}
+#sala_chat{
+	display: none;
+}
+#acesso_usuario{
+	height:30px;
+	left:50%;
+	margin-left:-160px;
+	margin-top:-15px;
+	position: fixed;
+	top:50%;
+	width:320px;
+}
+#acesso_usuario form{
+	margin:0;
+}
+
+#historico_mensagens{
+	border-right: 0;
+}
+#lista_usuarios{
+border-left: 1px solid #c54545;
+	height: 554px;
+	width: 20%;
+}
+
+#historico_mensagens .sistema{
+	background-color: #c54545;
+	color: #FFF;
+	font-weight: bold;
+}
+
+#historico_mensagens .privada{
+	background-color: #CCC;
+	color: #000;
+	font-weight: bold;
+}
