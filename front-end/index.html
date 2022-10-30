@@ -26,13 +26,7 @@
 			<input type='submit' value='Entrar' />
 		</form>
 	</div>
-    
-	<!-- Temporizador da rede social -->
-	<div id='temporizador'>
-		<span id = "timer_horas">00</span>:
-		<span id = "timer_minutos">00</span>:
-		<span id = "timer_segundos">00</span>
-	</div>
+
 
 
 	<!-- Div principal onde fica o painel de mensagens e lista de usuários -->
@@ -90,11 +84,7 @@
 					//e um alerta e acionado
 					$("#acesso_usuario").hide();
 					$("#sala_chat").show();
-					
-				    alert($("#nick").val() + "  Seja bem-vindo!");
-
-					
-		            
+				
 
 				}else{
 					//Do contrario o campo de mensagens e limpo e e apresentado um alert
@@ -117,31 +107,6 @@
 					$("#lista_usuarios").append(opcao_usuario);
 			});
 		});
-
-        //Temporizador, para enviar reenviar a mensagem se o usuario nao 
-		//responder em um determinado tempo
-		//Nao esta funcionando corretamente, nao deu tempo de aprender e implementar esse temporizador
-		var tempoMaximo = new Date(new Date().getTime() + 15 * 60000);
-
-		contador = window.setInterval(function(){
-		
-			var tempoAtual = new Date();
-			var diferenca = tempoMaximo - tempoAtual;
-
-			if (diferenca <= 0) {
-				window.clearInterval(contador);
-			}
-
-			var minutos = Math.floor(diferenca / 60000);
-			//var minutos = 0;
-			var segundos = diferenca % 60000;
-			
-			document.getElementById('timer_minutos').innerHTML = minutos;
-			document.getElementById('timer_segundos').innerHTML = segundos.toString().substring(0,2);
-
-
-
-		}, 1000);
 
 
 	</script>

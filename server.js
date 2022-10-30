@@ -15,43 +15,18 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);//Socket.IO
 
 
-/*
-
-
-//CODIGO QUE IA SER USADO PARA IMPLEMENTAR O ENVIO DE ARQUIVOS,
-//POREM NAO CONSEGUIMOS.
-
-
-
-const storage = multer.diskStorage({
-    destination: function(req,file,cb){
-        cb(null,"uploads/");
-    },
-    filename: function(req,file,cb){
-        cb(null, file.originalname + Date.now() + path.extname(file,originalname));
-    }
-})
-
-const upload = multer({storage});//Os arquivos serao salvos no diretorio uploads
-
-app.use(multer)
-
-app.post("/upload", upload.single("fileToSend"),(req,res) => { 
-    console.log("Arquivo Recebido = " + req.file + "\n" + red.body)	
-})
-
-
-*/
-
-
 
 
 //Nesta parte, estou direcionando uma pasta dizendo que os arquivos 
 //Front-end está na pasta front-end e usar html no chat
 app.use(express.static(path.join(__dirname, 'front-end')));
+app.get('/*', (req,res) => {
+    res.sendFile(__dirname + '/front-end/index.html');
+});
 app.set('views', path.join(__dirname, 'front-end'));
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
+
 
 app.use('/', (req, res) => {
     res.render('index.html');//apontar para esse doc html
@@ -177,6 +152,9 @@ io.on("connection", function(socket){
 });
 
 
-server.listen(3000,() => {
-	console.log("Servidor rodando!");
-});//Abrindo a porta 3000 do servidor
+
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () =>{
+    console.log('Servidor Iniciado na porta ' + PORT);
+});
