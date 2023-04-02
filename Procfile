@@ -1,2 +1,2 @@
 web: npm start
-docker desk1
+docker 
